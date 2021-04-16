@@ -1,5 +1,7 @@
-//蓝桥杯大赛-单片机组demo
+//https://github.com/CoreSic/Lqb-IAP15
+//项目名称：蓝桥杯大赛-单片机组demo
 //作者：coresic
+//转载请注明出处
 
 #include <STC15F2K60S2.H>
 
