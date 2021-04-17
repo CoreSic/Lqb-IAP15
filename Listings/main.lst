@@ -1,4 +1,4 @@
-C51 COMPILER V9.53.0.0   MAIN                                                              04/16/2021 23:35:55 PAGE 1   
+C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 14:38:44 PAGE 1   
 
 
 C51 COMPILER V9.53.0.0, COMPILATION OF MODULE MAIN
@@ -8,93 +8,96 @@ COMPILER INVOKED BY: D:\keil5-MDK\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWS
 
 line level    source
 
-   1          //蓝桥杯大赛-单片机组demo
-   2          //作者：coresic
-   3          
-   4          #include <STC15F2K60S2.H>
+   1          //https://github.com/CoreSic/Lqb-IAP15
+   2          //项目名称：蓝桥杯大赛-单片机组demo
+   3          //作者：coresic
+   4          //转载请注明出处
    5          
-   6          #define uchar unsigned char
-   7          #define uint unsigned int
-   8                  
-   9          uchar WEI[8];//数码管显示值缓存
-  10          uchar DUAN[10]={0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};//数码管段码
-  11          uchar index;//数码管显示位置
-  12          
-  13          void Enable38(uchar num)//38译码器
-  14          {
-  15   1              P2&=0x1f;
-  16   1              P2|=num<<5;
-  17   1      }
-  18          
-  19          void Timer0_Init()//定时器0初始化
-  20          {
-  21   1              TMOD=0x01;
-  22   1              TH0=-9;
-  23   1              TL1=0;
-  24   1              TR0=1;
-  25   1              ET0=1;
-  26   1              EA=1;
-  27   1      }
-  28          
-  29          void Display_init()//数码管初始化
-  30          {
-  31   1              WEI[0]=DUAN[0];
-  32   1              WEI[1]=DUAN[1];
-  33   1              WEI[2]=DUAN[2];
-  34   1              WEI[3]=DUAN[3];
-  35   1              WEI[4]=DUAN[4];
-  36   1              WEI[5]=DUAN[5];
-  37   1              WEI[6]=DUAN[6];
-  38   1              WEI[7]=DUAN[7];
-  39   1      }
-  40          
-  41          void Display()//数码管显示
-  42          {
-  43   1              Enable38(6);
-  44   1              P0=(0x01<<index);
-  45   1              Enable38(7);
-  46   1              P0=(WEI[index]);
-  47   1              index++;
-  48   1              index&=7;
-  49   1      }
-  50          
-  51          void LED8_ON(uchar num)//流水灯开
-  52          {
-  53   1              Enable38(4);
-  54   1              if(num<=7)
-C51 COMPILER V9.53.0.0   MAIN                                                              04/16/2021 23:35:55 PAGE 2   
+   6          #include <STC15F2K60S2.H>
+   7          #include <onewire.h>
+   8          
+   9          #define uchar unsigned char
+  10          #define uint unsigned int
+  11                  
+  12          uchar WEI[8];//数码管显示值缓存
+  13          uchar DUAN[10]={0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};//数码管段码
+  14          uchar index;//数码管显示位置
+  15          
+  16          void Enable38(uchar num)//38译码器
+  17          {
+  18   1              P2&=0x1f;
+  19   1              P2|=num<<5;
+  20   1      }
+  21          
+  22          void Timer0_Init()//定时器0初始化
+  23          {
+  24   1              TMOD=0x01;
+  25   1              TH0=-9;
+  26   1              TL1=0;
+  27   1              TR0=1;
+  28   1              ET0=1;
+  29   1              EA=1;
+  30   1      }
+  31          
+  32          void Display_init()//数码管初始化
+  33          {
+  34   1              WEI[0]=DUAN[0];
+  35   1              WEI[1]=DUAN[1];
+  36   1              WEI[2]=DUAN[2];
+  37   1              WEI[3]=DUAN[3];
+  38   1              WEI[4]=DUAN[4];
+  39   1              WEI[5]=DUAN[5];
+  40   1              WEI[6]=DUAN[6];
+  41   1              WEI[7]=DUAN[7];
+  42   1      }
+  43          
+  44          void Display()//数码管显示
+  45          {
+  46   1              Enable38(6);
+  47   1              P0=(0x01<<index);
+  48   1              Enable38(7);
+  49   1              P0=(WEI[index]);
+  50   1              index++;
+  51   1              index&=7;
+  52   1      }
+  53          
+  54          void LED8_ON(uchar num)//流水灯开
+C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 14:38:44 PAGE 2   
 
-  55   1              P0&=~(0x01<<num);
-  56   1              else
-  57   1              P0=0X00;
-  58   1      }
-  59          
-  60          void LED8_OFF(uchar num)//流水灯关
-  61          {
-  62   1              Enable38(4);
-  63   1              if(num<=7)
-  64   1              P0|=0x01<<num;
-  65   1              else
-  66   1              P0=0Xff;
-  67   1      }
-  68          
-  69          void main()//主函数
-  70          {
-  71   1              Display_init();
-  72   1              Timer0_Init();
-  73   1              LED8_OFF(8);
-  74   1              while(1)
-  75   1              {
-  76   2              
-  77   2              }
-  78   1      }
-  79          
-  80          void Timer0() interrupt 1//定时器0中断
-  81          {
-  82   1              TH0=-9;
-  83   1              Display();
-  84   1      }
-  85          
+  55          {
+  56   1              Enable38(4);
+  57   1              if(num<=7)
+  58   1              P0&=~(0x01<<num);
+  59   1              else
+  60   1              P0=0X00;
+  61   1      }
+  62          
+  63          void LED8_OFF(uchar num)//流水灯关
+  64          {
+  65   1              Enable38(4);
+  66   1              if(num<=7)
+  67   1              P0|=0x01<<num;
+  68   1              else
+  69   1              P0=0Xff;
+  70   1      }
+  71          
+  72          void main()//主函数
+  73          {
+  74   1              Display_init();
+  75   1              Timer0_Init();
+  76   1              LED8_OFF(8);
+  77   1              while(1)
+  78   1              {
+  79   2              
+  80   2              }
+  81   1      }
+  82          
+  83          void Timer0() interrupt 1//定时器0中断
+  84          {
+  85   1              TH0=-9;
+  86   1              Display();
+  87   1      }
+  88          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

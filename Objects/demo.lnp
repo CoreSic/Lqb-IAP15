@@ -1,3 +1,4 @@
-".\Objects\main.obj" 
+".\Objects\main.obj",
+".\Objects\onewire.obj" 
 TO ".\Objects\demo" 
 PRINT(".\Listings\demo.m51") RAMSIZE(256) 

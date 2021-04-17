@@ -4,7 +4,8 @@
   硬件环境: CT107单片机综合实训平台(外部晶振12MHz) STC89C52RC单片机
   日    期: 2011-8-9
 */
-#include "reg52.h"
+#include <STC15F2K60S2.H>
+#include <onewire.h>
 
 sbit DQ = P1^4;  //单总线接口
 
