@@ -1,4 +1,4 @@
-C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 17:58:46 PAGE 1   
+C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 20:01:24 PAGE 1   
 
 
 C51 COMPILER V9.53.0.0, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   52   1              uint wendu_num=wendu*10;
   53   1              WEI[0]=DUAN[wendu_num/100];
   54   1              WEI[1]=DUAN[wendu_num/10%10]&0x7f;
-C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 17:58:46 PAGE 2   
+C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 20:01:24 PAGE 2   
 
   55   1              WEI[2]=DUAN[wendu_num%10];
   56   1      }
@@ -126,7 +126,7 @@ line level    source
  114   1              P0|=0x01<<num;
  115   1              else
  116   1              P0=0Xff;
-C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 17:58:46 PAGE 3   
+C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 20:01:24 PAGE 3   
 
  117   1      }
  118          
@@ -137,34 +137,35 @@ line level    source
  123   1              Timer0_Init();//定时器0初始化
  124   1              Init_DS1302();//DS1302初始化
  125   1              LED8_OFF(8);//关闭8个led
- 126   1              while(1)
- 127   1              {
- 128   2                      if(count>=10)
- 129   2                      {
- 130   3                              count=0;
- 131   3                              
- 132   3                              Display_ADC(0x01);//ADC数据显示
- 133   3                              
- 134   3      //                      Display_date();//时间显示
- 135   3                              
- 136   3      //                      temp_num=Ds18b20_Get_data();//获取温度值
- 137   3      //                      if(temp_num<30)
- 138   3      //                      wendu=temp_num;//更新温度值
- 139   3      //                      Display_wendu();//更新温度显示
- 140   3                      }
- 141   2                      
+ 126   1      //      adc_set(0);
+ 127   1              while(1)
+ 128   1              {
+ 129   2                      if(count>=10)
+ 130   2                      {
+ 131   3                              count=0;
+ 132   3                              
+ 133   3                              Display_ADC(0x01);//ADC数据显示
+ 134   3                              
+ 135   3      //                      Display_date();//时间显示
+ 136   3                              
+ 137   3      //                      temp_num=Ds18b20_Get_data();//获取温度值
+ 138   3      //                      if(temp_num<30)
+ 139   3      //                      wendu=temp_num;//更新温度值
+ 140   3      //                      Display_wendu();//更新温度显示
+ 141   3                      }
  142   2                      
- 143   2              }
- 144   1      }
+ 143   2                      
+ 144   2              }
+ 145   1      }
 *** WARNING C280 IN LINE 121 OF main.c: 'temp_num': unreferenced local variable
- 145          
- 146          void Timer0() interrupt 1//定时器0中断
- 147          {
- 148   1              TH0=-9;
- 149   1              count++;
- 150   1              Display();//数码管显示函数
- 151   1      }
- 152          
+ 146          
+ 147          void Timer0() interrupt 1//定时器0中断
+ 148          {
+ 149   1              TH0=-9;
+ 150   1              count++;
+ 151   1              Display();//数码管显示函数
+ 152   1      }
+ 153          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

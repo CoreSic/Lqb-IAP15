@@ -9,7 +9,7 @@
 #include "intrins.h"
 #include "iic.h"
 
-#define DELAY_TIME 5
+#define DELAY_TIME 40		//修改：将5修改为40
 
 #define SlaveAddrW 0xA0
 #define SlaveAddrR 0xA1
@@ -105,6 +105,9 @@ unsigned char IIC_RecByte(void)
     return da;    
 }
 
+
+/*************************以下为自己添加的************************************/
+
 void PCF8591_ADC_Init(unsigned char adc_address)
 {
 	IIC_Start();			    //IIC起始信号
@@ -134,5 +137,20 @@ unsigned char PCF8591_Get_ADC(unsigned char adc_address)
 	PCF8591_ADC_Init(adc_address);
 	ADC_data=adc_pcf8591();
 	return ADC_data;
+}
+
+void adc_set(unsigned char dat)//DAC输出
+{
+	EA=0;
+	IIC_Start(); 
+	IIC_SendByte(0x90); // 地址+写
+	IIC_WaitAck();
+	IIC_SendByte(0x40);// DAC输出模式
+	IIC_WaitAck();
+	
+	IIC_SendByte(dat);  ;//DAC写入数据
+	IIC_WaitAck();
+	IIC_Stop();
+	EA=1;
 }
 

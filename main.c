@@ -123,6 +123,7 @@ void main()//主函数
 	Timer0_Init();//定时器0初始化
 	Init_DS1302();//DS1302初始化
 	LED8_OFF(8);//关闭8个led
+//	adc_set(0);
 	while(1)
 	{
 		if(count>=10)
