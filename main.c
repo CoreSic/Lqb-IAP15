@@ -6,6 +6,7 @@
 #include <STC15F2K60S2.H>
 #include "onewire.h"
 #include "ds1302.h"
+#include "iic.h"
 
 #define uchar unsigned char
 #define uint unsigned int
@@ -113,7 +114,7 @@ void main()//主函数
 		if(count>=10)
 		{
 			count=0;
-			Display_date();
+//			Display_date();//时间显示
 //			temp_num=Ds18b20_Get_data();//获取温度值
 //			if(temp_num<30)
 //			wendu=temp_num;//更新温度值
