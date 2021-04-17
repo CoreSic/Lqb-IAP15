@@ -4,4 +4,5 @@
 void Write_Ds1302(unsigned char temp);
 void Write_Ds1302_Byte( unsigned char address,unsigned char dat );
 unsigned char Read_Ds1302_Byte( unsigned char address );
+void Init_DS1302();//ds1302≥ı ºªØ
 #endif

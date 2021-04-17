@@ -24,13 +24,18 @@ Project File Date:  04/17/2021
 <h2>Output:</h2>
 Build target 'Target 1'
 compiling main.c...
+compiling ds1302.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_LED8_ON?MAIN
-Program Size: data=38.1 xdata=0 code=1394
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_READ_DS1302_BYTE?DS1302
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?INIT_DS1302?DS1302
+Program Size: data=38.1 xdata=0 code=1525
 creating hex file from ".\Objects\demo"...
-".\Objects\demo" - 0 Error(s), 1 Warning(s).
-Build Time Elapsed:  00:00:10
+".\Objects\demo" - 0 Error(s), 3 Warning(s).
+Build Time Elapsed:  00:00:12
 </pre>
 </body>
 </html>

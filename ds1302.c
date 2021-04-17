@@ -5,8 +5,9 @@
   日    期: 2011-8-9
 */
 
-#include <reg52.h>
+#include <STC15F2K60S2.H>
 #include <intrins.h>
+#include "ds1302.h"
 
 sbit SCK=P1^7;		
 sbit SDA=P2^3;		
@@ -55,4 +56,15 @@ unsigned char Read_Ds1302_Byte ( unsigned char address )
 	SDA=0;	_nop_();
 	SDA=1;	_nop_();
 	return (temp);			
+}
+
+void Init_DS1302()//ds1302初始化
+{
+	EA=0;
+	Write_Ds1302_Byte(0x8e,0x00);//关写保护
+	Write_Ds1302_Byte(0x80,0x50);//秒
+	Write_Ds1302_Byte(0x82,0x59);//分
+	Write_Ds1302_Byte(0x84,0x23);//时
+	Write_Ds1302_Byte(0x8e,0x80);//开写保护
+	EA=1;
 }

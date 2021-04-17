@@ -4,7 +4,8 @@
 //转载请注明出处
 
 #include <STC15F2K60S2.H>
-#include <onewire.h>
+#include "onewire.h"
+#include "ds1302.h"
 
 #define uchar unsigned char
 #define uint unsigned int
