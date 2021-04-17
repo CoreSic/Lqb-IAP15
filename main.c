@@ -88,6 +88,18 @@ void Display_ADC(unsigned char address_ADC)
 	WEI[7]=0xff;
 }
 
+void Display_AT24C02(unsigned char num)
+{
+	WEI[0]=DUAN[num/100];
+	WEI[1]=DUAN[num/10%10];
+	WEI[2]=DUAN[num%10];
+	WEI[3]=0xff;
+	WEI[4]=0xff;
+	WEI[5]=0xff;
+	WEI[6]=0xff;
+	WEI[7]=0xff;
+}
+
 void Display()//数码管显示
 {
 	Enable38(6);
@@ -123,14 +135,18 @@ void main()//主函数
 	Timer0_Init();//定时器0初始化
 	Init_DS1302();//DS1302初始化
 	LED8_OFF(8);//关闭8个led
+	AT24C02_write(0x03,60);
 //	adc_set(0);
+	Display_AT24C02(AT24C02_read(0x03));
+	Display_AT24C02(AT24C02_read(0x03));//重复一次，保证读取成功率
 	while(1)
 	{
-		if(count>=10)
+		
+		if(count>=100)
 		{
 			count=0;
 			
-			Display_ADC(0x01);//ADC数据显示
+//			Display_ADC(0x01);//ADC数据显示
 			
 //			Display_date();//时间显示
 			
