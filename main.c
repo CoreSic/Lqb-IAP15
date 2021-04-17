@@ -15,6 +15,7 @@ uchar DUAN[10]={0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};//数码管段码
 uchar index;//数码管显示位置
 float wendu;//温度数据
 uint count;//定时器计数值
+uchar hour, minute, second;//时分秒
 
 void Enable38(uchar num)//38译码器
 {
@@ -52,6 +53,26 @@ void Display_wendu()//温度显示
 	WEI[2]=DUAN[wendu_num%10];
 }
 
+void Display_date()//时间显示
+{
+	second=Read_Ds1302_Byte(0x81);//读取秒
+	minute=Read_Ds1302_Byte(0x83);//读取分
+	hour=Read_Ds1302_Byte(0x85);//读取时
+	
+	WEI[0]=DUAN[hour/10];
+	WEI[1]=DUAN[hour%10];
+	
+	WEI[2]=~0x40;
+	
+	WEI[3]=DUAN[minute/10];
+	WEI[4]=DUAN[minute%10];
+	
+	WEI[5]=~0x40;
+	
+	WEI[6]=DUAN[second/10];
+	WEI[7]=DUAN[second%10];
+}
+
 void Display()//数码管显示
 {
 	Enable38(6);
@@ -85,17 +106,20 @@ void main()//主函数
 	float temp_num;
 	Display_init();//数码管显示初始化
 	Timer0_Init();//定时器0初始化
+	Init_DS1302();//DS1302初始化
 	LED8_OFF(8);//关闭8个led
 	while(1)
 	{
 		if(count>=10)
 		{
 			count=0;
-			temp_num=Ds18b20_Get_data();//获取温度值
-			if(temp_num<30)
-			wendu=temp_num;//更新温度值
-			Display_wendu();//更新温度显示
+			Display_date();
+//			temp_num=Ds18b20_Get_data();//获取温度值
+//			if(temp_num<30)
+//			wendu=temp_num;//更新温度值
+//			Display_wendu();//更新温度显示
 		}
+		
 		
 	}
 }

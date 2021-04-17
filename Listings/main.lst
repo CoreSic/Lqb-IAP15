@@ -1,4 +1,4 @@
-C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 16:58:41 PAGE 1   
+C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 17:22:00 PAGE 1   
 
 
 C51 COMPILER V9.53.0.0, COMPILATION OF MODULE MAIN
@@ -25,113 +25,138 @@ line level    source
   15          uchar index;//数码管显示位置
   16          float wendu;//温度数据
   17          uint count;//定时器计数值
-  18          
-  19          void Enable38(uchar num)//38译码器
-  20          {
-  21   1              P2&=0x1f;
-  22   1              P2|=num<<5;
-  23   1      }
-  24          
-  25          void Timer0_Init()//定时器0初始化
-  26          {
-  27   1              TMOD=0x01;
-  28   1              TH0=-9;
-  29   1              TL1=0;
-  30   1              TR0=1;
-  31   1              ET0=1;
-  32   1              EA=1;
-  33   1      }
-  34          
-  35          void Display_init()//数码管显示初始化
-  36          {
-  37   1              WEI[0]=DUAN[0];
-  38   1              WEI[1]=DUAN[0];
-  39   1              WEI[2]=DUAN[0];
-  40   1              WEI[3]=DUAN[0];
-  41   1              WEI[4]=DUAN[0];
-  42   1              WEI[5]=DUAN[0];
-  43   1              WEI[6]=DUAN[0];
-  44   1              WEI[7]=DUAN[0];
-  45   1      }
-  46          
-  47          void Display_wendu()//温度显示
-  48          {
-  49   1              uint wendu_num=wendu*10;
-  50   1              WEI[0]=DUAN[wendu_num/100];
-  51   1              WEI[1]=DUAN[wendu_num/10%10]&0x7f;
-  52   1              WEI[2]=DUAN[wendu_num%10];
-  53   1      }
-  54          
-C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 16:58:41 PAGE 2   
+  18          uchar hour, minute, second;//时分秒
+  19          
+  20          void Enable38(uchar num)//38译码器
+  21          {
+  22   1              P2&=0x1f;
+  23   1              P2|=num<<5;
+  24   1      }
+  25          
+  26          void Timer0_Init()//定时器0初始化
+  27          {
+  28   1              TMOD=0x01;
+  29   1              TH0=-9;
+  30   1              TL1=0;
+  31   1              TR0=1;
+  32   1              ET0=1;
+  33   1              EA=1;
+  34   1      }
+  35          
+  36          void Display_init()//数码管显示初始化
+  37          {
+  38   1              WEI[0]=DUAN[0];
+  39   1              WEI[1]=DUAN[0];
+  40   1              WEI[2]=DUAN[0];
+  41   1              WEI[3]=DUAN[0];
+  42   1              WEI[4]=DUAN[0];
+  43   1              WEI[5]=DUAN[0];
+  44   1              WEI[6]=DUAN[0];
+  45   1              WEI[7]=DUAN[0];
+  46   1      }
+  47          
+  48          void Display_wendu()//温度显示
+  49          {
+  50   1              uint wendu_num=wendu*10;
+  51   1              WEI[0]=DUAN[wendu_num/100];
+  52   1              WEI[1]=DUAN[wendu_num/10%10]&0x7f;
+  53   1              WEI[2]=DUAN[wendu_num%10];
+  54   1      }
+C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 17:22:00 PAGE 2   
 
-  55          void Display()//数码管显示
-  56          {
-  57   1              Enable38(6);
-  58   1              P0=(0x01<<index);
-  59   1              Enable38(7);
-  60   1              P0=(WEI[index]);
-  61   1              index++;
-  62   1              index&=7;
-  63   1      }
-  64          
-  65          void LED8_ON(uchar num)//流水灯开
-  66          {
-  67   1              Enable38(4);
-  68   1              if(num<=7)
-  69   1              P0&=~(0x01<<num);
-  70   1              else
-  71   1              P0=0X00;
-  72   1      }
-  73          
-  74          void LED8_OFF(uchar num)//流水灯关
-  75          {
-  76   1              Enable38(4);
-  77   1              if(num<=7)
-  78   1              P0|=0x01<<num;
-  79   1              else
-  80   1              P0=0Xff;
-  81   1      }
-  82          
-  83          void main()//主函数
-  84          {
-  85   1              float temp_num;
-  86   1              Display_init();//数码管显示初始化
-  87   1              Timer0_Init();//定时器0初始化
-  88   1              LED8_OFF(8);//关闭8个led
-  89   1              while(1)
-  90   1              {
-  91   2                      if(count>=10)
-  92   2                      {
-  93   3                              count=0;
-  94   3                              temp_num=Ds18b20_Get_data();//获取温度值
-  95   3                              if(temp_num<30)
-  96   3                              wendu=temp_num;//更新温度值
-  97   3                              Display_wendu();//更新温度显示
-  98   3                      }
-  99   2                      
- 100   2              }
- 101   1      }
- 102          
- 103          void Timer0() interrupt 1//定时器0中断
- 104          {
- 105   1              TH0=-9;
- 106   1              count++;
- 107   1              Display();//数码管显示函数
- 108   1      }
- 109          
+  55          
+  56          void Display_date()//时间显示
+  57          {
+  58   1              second=Read_Ds1302_Byte(0x81);//读取秒
+  59   1              minute=Read_Ds1302_Byte(0x83);//读取分
+  60   1              hour=Read_Ds1302_Byte(0x85);//读取时
+  61   1              
+  62   1              WEI[0]=DUAN[hour/10];
+  63   1              WEI[1]=DUAN[hour%10];
+  64   1              
+  65   1              WEI[2]=~0x40;
+  66   1              
+  67   1              WEI[3]=DUAN[minute/10];
+  68   1              WEI[4]=DUAN[minute%10];
+  69   1              
+  70   1              WEI[5]=~0x40;
+  71   1              
+  72   1              WEI[6]=DUAN[second/10];
+  73   1              WEI[7]=DUAN[second%10];
+  74   1      }
+  75          
+  76          void Display()//数码管显示
+  77          {
+  78   1              Enable38(6);
+  79   1              P0=(0x01<<index);
+  80   1              Enable38(7);
+  81   1              P0=(WEI[index]);
+  82   1              index++;
+  83   1              index&=7;
+  84   1      }
+  85          
+  86          void LED8_ON(uchar num)//流水灯开
+  87          {
+  88   1              Enable38(4);
+  89   1              if(num<=7)
+  90   1              P0&=~(0x01<<num);
+  91   1              else
+  92   1              P0=0X00;
+  93   1      }
+  94          
+  95          void LED8_OFF(uchar num)//流水灯关
+  96          {
+  97   1              Enable38(4);
+  98   1              if(num<=7)
+  99   1              P0|=0x01<<num;
+ 100   1              else
+ 101   1              P0=0Xff;
+ 102   1      }
+ 103          
+ 104          void main()//主函数
+ 105          {
+ 106   1              float temp_num;
+ 107   1              Display_init();//数码管显示初始化
+ 108   1              Timer0_Init();//定时器0初始化
+ 109   1              Init_DS1302();//DS1302初始化
+ 110   1              LED8_OFF(8);//关闭8个led
+ 111   1              while(1)
+ 112   1              {
+ 113   2                      if(count>=10)
+ 114   2                      {
+ 115   3                              count=0;
+ 116   3                              Display_date();
+C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 17:22:00 PAGE 3   
+
+ 117   3      //                      temp_num=Ds18b20_Get_data();//获取温度值
+ 118   3      //                      if(temp_num<30)
+ 119   3      //                      wendu=temp_num;//更新温度值
+ 120   3      //                      Display_wendu();//更新温度显示
+ 121   3                      }
+ 122   2                      
+ 123   2                      
+ 124   2              }
+ 125   1      }
+*** WARNING C280 IN LINE 106 OF main.c: 'temp_num': unreferenced local variable
+ 126          
+ 127          void Timer0() interrupt 1//定时器0中断
+ 128          {
+ 129   1              TH0=-9;
+ 130   1              count++;
+ 131   1              Display();//数码管显示函数
+ 132   1      }
+ 133          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    352    ----
+   CODE SIZE        =    418    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 16:58:41 PAGE 3   
-
-   DATA SIZE        =     25       4
+   DATA SIZE        =     28       4
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

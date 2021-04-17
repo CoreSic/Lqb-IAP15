@@ -55,7 +55,8 @@ unsigned char Read_Ds1302_Byte ( unsigned char address )
 	SCK=1;	_nop_();
 	SDA=0;	_nop_();
 	SDA=1;	_nop_();
-	return (temp);			
+	
+	return (temp/16*10+temp%16);//修改：BCD码转十进制数	
 }
 
 void Init_DS1302()//ds1302初始化
