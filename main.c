@@ -17,6 +17,7 @@ uchar index;//数码管显示位置
 float wendu;//温度数据
 uint count;//定时器计数值
 uchar hour, minute, second;//时分秒
+uchar ADC_data;//ADC数据
 
 void Enable38(uchar num)//38译码器
 {
@@ -74,6 +75,19 @@ void Display_date()//时间显示
 	WEI[7]=DUAN[second%10];
 }
 
+void Display_ADC(unsigned char address_ADC)
+{
+	ADC_data=PCF8591_Get_ADC(address_ADC);
+	WEI[0]=DUAN[ADC_data/100];
+	WEI[1]=DUAN[ADC_data/10%10];
+	WEI[2]=DUAN[ADC_data%10];
+	WEI[3]=0xff;
+	WEI[4]=0xff;
+	WEI[5]=0xff;
+	WEI[6]=0xff;
+	WEI[7]=0xff;
+}
+
 void Display()//数码管显示
 {
 	Enable38(6);
@@ -114,7 +128,11 @@ void main()//主函数
 		if(count>=10)
 		{
 			count=0;
+			
+			Display_ADC(0x01);//ADC数据显示
+			
 //			Display_date();//时间显示
+			
 //			temp_num=Ds18b20_Get_data();//获取温度值
 //			if(temp_num<30)
 //			wendu=temp_num;//更新温度值

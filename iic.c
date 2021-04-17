@@ -104,3 +104,35 @@ unsigned char IIC_RecByte(void)
     }
     return da;    
 }
+
+void PCF8591_ADC_Init(unsigned char adc_address)
+{
+	IIC_Start();			    //IIC起始信号
+	IIC_SendByte(0x90);			//总线寻址，进入写模式
+	IIC_WaitAck();      		//等待从机应答响应
+    IIC_SendByte(adc_address);  //写通道号，可以00,01,02,03
+	IIC_WaitAck();      		//等待从机应答响应
+    IIC_Stop();         		//停止IIC
+}
+
+unsigned char adc_pcf8591(void)
+{
+	unsigned char temp;
+	IIC_Start();                //IIC起始信号
+	IIC_SendByte(0x91);    		//总线寻址，进入读模式
+	IIC_WaitAck();              //等待从机应答响应
+	temp = IIC_RecByte();  		//读一个字节
+	IIC_SendAck(0);         	//主机向从机作出非应答响应,释放SDA
+	IIC_Stop();         		//停止IIC
+
+	return temp;//返回一个0~255之间的AD结果
+}
+
+unsigned char PCF8591_Get_ADC(unsigned char adc_address)
+{
+	unsigned char ADC_data;
+	PCF8591_ADC_Init(adc_address);
+	ADC_data=adc_pcf8591();
+	return ADC_data;
+}
+

@@ -23,7 +23,8 @@ Project File Date:  04/17/2021
 
 <h2>Output:</h2>
 Build target 'Target 1'
-compiling iic.c...
+compiling main.c...
+main.c(121): warning C280: 'temp_num': unreferenced local variable
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?DISPLAY_WENDU?MAIN
@@ -33,22 +34,10 @@ linking...
     SEGMENT: ?PR?_LED8_ON?MAIN
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?DS18B20_GET_DATA?ONEWIRE
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?IIC_START?IIC
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?IIC_STOP?IIC
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?IIC_SENDACK?IIC
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?IIC_WAITACK?IIC
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_IIC_SENDBYTE?IIC
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?IIC_RECBYTE?IIC
-Program Size: data=41.3 xdata=0 code=1631
+Program Size: data=42.2 xdata=0 code=1756
 creating hex file from ".\Objects\demo"...
-".\Objects\demo" - 0 Error(s), 10 Warning(s).
-Build Time Elapsed:  00:00:07
+".\Objects\demo" - 0 Error(s), 5 Warning(s).
+Build Time Elapsed:  00:00:06
 </pre>
 </body>
 </html>
