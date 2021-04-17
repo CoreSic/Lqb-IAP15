@@ -12,6 +12,7 @@ sbit DQ = P1^4;  //单总线接口
 //单总线延时函数
 void Delay_OneWire(unsigned int t)  //STC89C52RC
 {
+	t=t*10;
 	while(t--);
 }
 
@@ -67,7 +68,26 @@ bit init_ds18b20(void)
   	return initflag;
 }
 
-
+float Ds18b20_Get_data()
+{
+	unsigned char low, high;
+	unsigned int temp;
+	float temperature;
+	init_ds18b20();
+	Write_DS18B20(0xcc);//跳过ROM
+	Write_DS18B20(0x44);//发送温度转换命令
+	Delay_OneWire(250);
+	init_ds18b20();
+	Write_DS18B20(0xcc);//跳过ROM
+	Write_DS18B20(0xbe);//发送读暂存器命令
+	Delay_OneWire(250);
+	low=Read_DS18B20();
+	high=Read_DS18B20();
+	init_ds18b20();
+	temp=(low|(high<<8));
+	temperature=temp*0.0625;
+	return temperature;
+}
 
 
 

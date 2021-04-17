@@ -12,6 +12,8 @@
 uchar WEI[8];//数码管显示值缓存
 uchar DUAN[10]={0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};//数码管段码
 uchar index;//数码管显示位置
+float wendu;//温度数据
+uint count;//定时器计数值
 
 void Enable38(uchar num)//38译码器
 {
@@ -29,16 +31,24 @@ void Timer0_Init()//定时器0初始化
 	EA=1;
 }
 
-void Display_init()//数码管初始化
+void Display_init()//数码管显示初始化
 {
 	WEI[0]=DUAN[0];
-	WEI[1]=DUAN[1];
-	WEI[2]=DUAN[2];
-	WEI[3]=DUAN[3];
-	WEI[4]=DUAN[4];
-	WEI[5]=DUAN[5];
-	WEI[6]=DUAN[6];
-	WEI[7]=DUAN[7];
+	WEI[1]=DUAN[0];
+	WEI[2]=DUAN[0];
+	WEI[3]=DUAN[0];
+	WEI[4]=DUAN[0];
+	WEI[5]=DUAN[0];
+	WEI[6]=DUAN[0];
+	WEI[7]=DUAN[0];
+}
+
+void Display_wendu()//温度显示
+{
+	uint wendu_num=wendu*10;
+	WEI[0]=DUAN[wendu_num/100];
+	WEI[1]=DUAN[wendu_num/10%10]&0x7f;
+	WEI[2]=DUAN[wendu_num%10];
 }
 
 void Display()//数码管显示
@@ -71,18 +81,28 @@ void LED8_OFF(uchar num)//流水灯关
 
 void main()//主函数
 {
-	Display_init();
-	Timer0_Init();
-	LED8_OFF(8);
+	float temp_num;
+	Display_init();//数码管显示初始化
+	Timer0_Init();//定时器0初始化
+	LED8_OFF(8);//关闭8个led
 	while(1)
 	{
-	
+		if(count>=10)
+		{
+			count=0;
+			temp_num=Ds18b20_Get_data();//获取温度值
+			if(temp_num<30)
+			wendu=temp_num;//更新温度值
+			Display_wendu();//更新温度显示
+		}
+		
 	}
 }
 
 void Timer0() interrupt 1//定时器0中断
 {
 	TH0=-9;
-	Display();
+	count++;
+	Display();//数码管显示函数
 }
 
