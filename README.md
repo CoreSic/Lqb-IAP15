@@ -1,14 +1,12 @@
-蓝桥杯大赛-电子类-单片机组demo
+# 项目名称：蓝桥杯大赛-电子类-单片机组demo
 
-https://github.com/CoreSic/Lqb-IAP15
+# 网址：https://github.com/CoreSic/Lqb-IAP15
 
-项目名称：蓝桥杯大赛-单片机组demo
+# 作者：coresic
 
-作者：coresic
+#### 转载请注明出处
 
-转载请注明出处
-
-已实现以下内容：
+# 已实现以下功能：
 
 1.流水灯
 
