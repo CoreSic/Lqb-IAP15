@@ -1,4 +1,4 @@
-C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 22:34:00 PAGE 1   
+C51 COMPILER V9.53.0.0   MAIN                                                              04/18/2021 14:19:05 PAGE 1   
 
 
 C51 COMPILER V9.53.0.0, COMPILATION OF MODULE MAIN
@@ -30,201 +30,193 @@ line level    source
   20          uchar ADC_data;//ADC数据
   21          //uchar s4, s5, s6, s7;//四个独立按键
   22          uchar key_data;//按键扫描值
-  23          sbit key=P4^4;
-  24          
-  25          void Enable38(uchar num)//38译码器
-  26          {
-  27   1              P2&=0x1f;
-  28   1              P2|=num<<5;
-  29   1      }
-  30          
-  31          void Timer0_Init()//定时器0初始化
-  32          {
-  33   1              TMOD=0x01;
-  34   1              TH0=-9;
-  35   1              TL1=0;
-  36   1              TR0=1;
-  37   1              ET0=1;
-  38   1              EA=1;
-  39   1      }
-  40          
-  41          void Display_init()//数码管显示初始化
-  42          {
-  43   1              WEI[0]=DUAN[0];
-  44   1              WEI[1]=DUAN[0];
-  45   1              WEI[2]=DUAN[0];
-  46   1              WEI[3]=DUAN[0];
-  47   1              WEI[4]=DUAN[0];
-  48   1              WEI[5]=DUAN[0];
-  49   1              WEI[6]=DUAN[0];
-  50   1              WEI[7]=DUAN[0];
-  51   1      }
-  52          
-  53          void Display_wendu()//温度显示
-  54          {
-C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 22:34:00 PAGE 2   
+  23          uchar led8;//流水灯数据缓存
+  24          sbit key=P4^4;
+  25          
+  26          void Enable38(uchar num)//38译码器
+  27          {
+  28   1              P2&=0x1f;
+  29   1              P2|=num<<5;
+  30   1      }
+  31          
+  32          void Timer0_Init()//定时器0初始化
+  33          {
+  34   1              TMOD=0x01;
+  35   1              TH0=-9;
+  36   1              TL1=0;
+  37   1              TR0=1;
+  38   1              ET0=1;
+  39   1              EA=1;
+  40   1      }
+  41          
+  42          void Display_init()//数码管显示初始化
+  43          {
+  44   1              WEI[0]=DUAN[0];
+  45   1              WEI[1]=DUAN[0];
+  46   1              WEI[2]=DUAN[0];
+  47   1              WEI[3]=DUAN[0];
+  48   1              WEI[4]=DUAN[0];
+  49   1              WEI[5]=DUAN[0];
+  50   1              WEI[6]=DUAN[0];
+  51   1              WEI[7]=DUAN[0];
+  52   1      }
+  53          
+  54          void Display_wendu()//温度显示
+C51 COMPILER V9.53.0.0   MAIN                                                              04/18/2021 14:19:05 PAGE 2   
 
-  55   1              uint wendu_num=wendu*10;
-  56   1              WEI[0]=DUAN[wendu_num/100];
-  57   1              WEI[1]=DUAN[wendu_num/10%10]&0x7f;
-  58   1              WEI[2]=DUAN[wendu_num%10];
-  59   1              WEI[3]=0xff;
-  60   1              WEI[4]=0xff;
-  61   1              WEI[5]=0xff;
-  62   1              WEI[6]=0xff;
-  63   1              WEI[7]=0xff;
-  64   1      }
-  65          
-  66          void Display_date()//时间显示
-  67          {
-  68   1              second=Read_Ds1302_Byte(0x81);//读取秒
-  69   1              minute=Read_Ds1302_Byte(0x83);//读取分
-  70   1              hour=Read_Ds1302_Byte(0x85);//读取时
-  71   1              
-  72   1              WEI[0]=DUAN[hour/10];
-  73   1              WEI[1]=DUAN[hour%10];
-  74   1              
-  75   1              WEI[2]=~0x40;
-  76   1              
-  77   1              WEI[3]=DUAN[minute/10];
-  78   1              WEI[4]=DUAN[minute%10];
-  79   1              
-  80   1              WEI[5]=~0x40;
-  81   1              
-  82   1              WEI[6]=DUAN[second/10];
-  83   1              WEI[7]=DUAN[second%10];
-  84   1      }
-  85          
-  86          void Display_ADC(unsigned char address_ADC)//ADC读取数据显示
-  87          {
-  88   1              ADC_data=PCF8591_Get_ADC(address_ADC);
-  89   1              WEI[0]=DUAN[ADC_data/100];
-  90   1              WEI[1]=DUAN[ADC_data/10%10];
-  91   1              WEI[2]=DUAN[ADC_data%10];
-  92   1              WEI[3]=0xff;
-  93   1              WEI[4]=0xff;
-  94   1              WEI[5]=0xff;
-  95   1              WEI[6]=0xff;
-  96   1              WEI[7]=0xff;
-  97   1      }
-  98          
-  99          void Display_AT24C02(unsigned char num)//AT24C02读取数据显示
- 100          {
- 101   1              WEI[0]=DUAN[num/100];
- 102   1              WEI[1]=DUAN[num/10%10];
- 103   1              WEI[2]=DUAN[num%10];
- 104   1              WEI[3]=0xff;
- 105   1              WEI[4]=0xff;
- 106   1              WEI[5]=0xff;
- 107   1              WEI[6]=0xff;
- 108   1              WEI[7]=0xff;
- 109   1      }
- 110          
- 111          void Display()//数码管显示
- 112          {
- 113   1              Enable38(6);
- 114   1              P0=(0x01<<index);
- 115   1              Enable38(7);
- 116   1              P0=(WEI[index]);
-C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 22:34:00 PAGE 3   
+  55          {
+  56   1              uint wendu_num=wendu*10;
+  57   1              WEI[0]=DUAN[wendu_num/100];
+  58   1              WEI[1]=DUAN[wendu_num/10%10]&0x7f;
+  59   1              WEI[2]=DUAN[wendu_num%10];
+  60   1              WEI[3]=0xff;
+  61   1              WEI[4]=0xff;
+  62   1              WEI[5]=0xff;
+  63   1              WEI[6]=0xff;
+  64   1              WEI[7]=0xff;
+  65   1      }
+  66          
+  67          void Display_date()//时间显示
+  68          {
+  69   1              second=Read_Ds1302_Byte(0x81);//读取秒
+  70   1              minute=Read_Ds1302_Byte(0x83);//读取分
+  71   1              hour=Read_Ds1302_Byte(0x85);//读取时
+  72   1              
+  73   1              WEI[0]=DUAN[hour/10];
+  74   1              WEI[1]=DUAN[hour%10];
+  75   1              
+  76   1              WEI[2]=~0x40;
+  77   1              
+  78   1              WEI[3]=DUAN[minute/10];
+  79   1              WEI[4]=DUAN[minute%10];
+  80   1              
+  81   1              WEI[5]=~0x40;
+  82   1              
+  83   1              WEI[6]=DUAN[second/10];
+  84   1              WEI[7]=DUAN[second%10];
+  85   1      }
+  86          
+  87          void Display_ADC(unsigned char address_ADC)//ADC读取数据显示
+  88          {
+  89   1              ADC_data=PCF8591_Get_ADC(address_ADC);
+  90   1              WEI[0]=DUAN[ADC_data/100];
+  91   1              WEI[1]=DUAN[ADC_data/10%10];
+  92   1              WEI[2]=DUAN[ADC_data%10];
+  93   1              WEI[3]=0xff;
+  94   1              WEI[4]=0xff;
+  95   1              WEI[5]=0xff;
+  96   1              WEI[6]=0xff;
+  97   1              WEI[7]=0xff;
+  98   1      }
+  99          
+ 100          void Display_AT24C02(unsigned char num)//AT24C02读取数据显示
+ 101          {
+ 102   1              WEI[0]=DUAN[num/100];
+ 103   1              WEI[1]=DUAN[num/10%10];
+ 104   1              WEI[2]=DUAN[num%10];
+ 105   1              WEI[3]=0xff;
+ 106   1              WEI[4]=0xff;
+ 107   1              WEI[5]=0xff;
+ 108   1              WEI[6]=0xff;
+ 109   1              WEI[7]=0xff;
+ 110   1      }
+ 111          
+ 112          void led8_change(uchar num)//流水灯状态更新
+ 113          {
+ 114   1              Enable38(4);
+ 115   1              P0=~num;
+ 116   1      }
+C51 COMPILER V9.53.0.0   MAIN                                                              04/18/2021 14:19:05 PAGE 3   
 
- 117   1              index++;
- 118   1              index&=7;
- 119   1      }
- 120          
- 121          void LED8_ON(uchar num)//流水灯开
- 122          {
- 123   1              Enable38(4);
- 124   1              if(num<=7)
- 125   1              P0&=~(0x01<<num);
- 126   1              else
- 127   1              P0=0X00;
- 128   1      }
- 129          
- 130          void LED8_OFF(uchar num)//流水灯关
- 131          {
- 132   1              Enable38(4);
- 133   1              if(num<=7)
- 134   1              P0|=0x01<<num;
- 135   1              else
- 136   1              P0=0Xff;
- 137   1      }
- 138          
- 139          void Key_scan()//按键扫描
- 140          {
- 141   1              key=0;
- 142   1              P3|=0x0f;
- 143   1              switch(P3&0x0f)
- 144   1              {
- 145   2                      case 0x0e:key_data=7;break;
- 146   2                      case 0x0d:key_data=6;break;
- 147   2                      case 0x0b:key_data=5;break;
- 148   2                      case 0x07:key_data=4;break;
- 149   2              }
- 150   1              while(P3&0x0f!=0x0f);
- 151   1              
- 152   1      }
- 153          
- 154          void main()//主函数
- 155          {
- 156   1              float temp_num;
- 157   1              bit flag_led;
- 158   1              Display_init();//数码管显示初始化
- 159   1              Timer0_Init();//定时器0初始化
- 160   1              Init_DS1302();//DS1302初始化
- 161   1              LED8_OFF(8);//关闭8个led
- 162   1              AT24C02_write(0x03,60);//AT24C02写入数据
- 163   1      //      adc_set(0);//DA输出
- 164   1              Display_AT24C02(AT24C02_read(0x03));//AT24C02读取数据显示
- 165   1              Display_AT24C02(AT24C02_read(0x03));//重复一次，保证读取成功率
- 166   1              while(1)
- 167   1              {
- 168   2                      
- 169   2                      if(count>=20)
- 170   2                      {
- 171   3                              count=0;
- 172   3                              if(key_data!=0)
- 173   3                              {
- 174   4                                      switch(key_data)
- 175   4                                      {
- 176   5                                              case 4: Display_ADC(0x01);//ADC数据显示
+ 117          
+ 118          void Display()//数码管显示
+ 119          {
+ 120   1              Enable38(7);
+ 121   1              P0=0xff;//消影
+ 122   1              led8_change(led8);//流水灯状态更新
+ 123   1              Enable38(6);
+ 124   1              P0=(0x01<<index);
+ 125   1              Enable38(7);
+ 126   1              P0=(WEI[index]);
+ 127   1              index++;
+ 128   1              index&=7;
+ 129   1      }
+ 130          
+ 131          void Key_scan()//按键扫描
+ 132          {
+ 133   1              key=0;
+ 134   1              P3|=0x0f;
+ 135   1              switch(P3&0x0f)
+ 136   1              {
+ 137   2                      case 0x0e:key_data=7;break;
+ 138   2                      case 0x0d:key_data=6;break;
+ 139   2                      case 0x0b:key_data=5;break;
+ 140   2                      case 0x07:key_data=4;break;
+ 141   2              }
+ 142   1              while(P3&0x0f!=0x0f);
+ 143   1              
+ 144   1      }
+ 145          
+ 146          void main()//主函数
+ 147          {
+ 148   1              float temp_num;
+ 149   1              bit flag_led;
+ 150   1              Display_init();//数码管显示初始化
+ 151   1              Timer0_Init();//定时器0初始化
+ 152   1              Init_DS1302();//DS1302初始化
+ 153   1              led8=0;//关闭8个led
+ 154   1              led8_change(led8);
+ 155   1              AT24C02_write(0x03,60);//AT24C02写入数据
+ 156   1              adc_set(10);//DA输出
+ 157   1              Display_AT24C02(AT24C02_read(0x03));//AT24C02读取数据显示
+ 158   1              Display_AT24C02(AT24C02_read(0x03));//重复一次，保证读取成功率
+ 159   1              while(1)
+ 160   1              {
+ 161   2                      Key_scan();//按键扫描
+ 162   2                      if(count>=20)
+ 163   2                      {
+ 164   3                              count=0;
+ 165   3                              if(key_data!=0)
+ 166   3                              {
+ 167   4                                      switch(key_data)
+ 168   4                                      {
+ 169   5                                              case 4: Display_ADC(0x01);//ADC数据显示
+ 170   5                                                              break;
+ 171   5                                              case 5: Display_date();//时间显示
+ 172   5                                                              break;
+ 173   5                                              case 6: temp_num=Ds18b20_Get_data();//获取温度值
+ 174   5                                                              if(temp_num<30)
+ 175   5                                                              wendu=temp_num;//更新温度值
+ 176   5                                                              Display_wendu();//更新温度显示
  177   5                                                              break;
- 178   5                                              case 5: Display_date();//时间显示
-C51 COMPILER V9.53.0.0   MAIN                                                              04/17/2021 22:34:00 PAGE 4   
+ 178   5                                              case 7: flag_led=!flag_led;
+C51 COMPILER V9.53.0.0   MAIN                                                              04/18/2021 14:19:05 PAGE 4   
 
- 179   5                                                              break;
- 180   5                                              case 6: temp_num=Ds18b20_Get_data();//获取温度值
- 181   5                                                              if(temp_num<30)
- 182   5                                                              wendu=temp_num;//更新温度值
- 183   5                                                              Display_wendu();//更新温度显示
- 184   5                                                              break;
- 185   5                                              case 7: flag_led=!flag_led;
- 186   5                                                              if(flag_led)LED8_ON(1);else LED8_OFF(1);//按键控制led
- 187   5                                                              break;
- 188   5                                      }
- 189   4                                      
- 190   4      //                              key_data=0;
- 191   4                              }
- 192   3                      }
- 193   2              }
+ 179   5                                                              if(flag_led)led8|=0x01;else led8&=~0x01;//按键控制led
+ 180   5                                                              break;
+ 181   5                                      }
+ 182   4                                      
+ 183   4      //                              key_data=0;
+ 184   4                              }
+ 185   3                      }
+ 186   2              }
+ 187   1      }
+ 188          
+ 189          void Timer0() interrupt 1//定时器0中断
+ 190          {
+ 191   1              TH0=-9;
+ 192   1              count++;
+ 193   1              Display();//数码管显示函数
  194   1      }
  195          
- 196          void Timer0() interrupt 1//定时器0中断
- 197          {
- 198   1              TH0=-9;
- 199   1              count++;
- 200   1              Display();//数码管显示函数
- 201   1              Key_scan();//按键扫描
- 202   1      }
- 203          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    717    ----
+   CODE SIZE        =    683    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     30       4
+   DATA SIZE        =     31       4
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----       1
 END OF MODULE INFORMATION.

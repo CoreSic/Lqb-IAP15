@@ -20,6 +20,7 @@ uchar hour, minute, second;//时分秒
 uchar ADC_data;//ADC数据
 //uchar s4, s5, s6, s7;//四个独立按键
 uchar key_data;//按键扫描值
+uchar led8;//流水灯数据缓存
 sbit key=P4^4;
 
 void Enable38(uchar num)//38译码器
@@ -108,32 +109,23 @@ void Display_AT24C02(unsigned char num)//AT24C02读取数据显示
 	WEI[7]=0xff;
 }
 
+void led8_change(uchar num)//流水灯状态更新
+{
+	Enable38(4);
+	P0=~num;
+}
+
 void Display()//数码管显示
 {
+	Enable38(7);
+	P0=0xff;//消影
+	led8_change(led8);//流水灯状态更新
 	Enable38(6);
 	P0=(0x01<<index);
 	Enable38(7);
 	P0=(WEI[index]);
 	index++;
 	index&=7;
-}
-
-void LED8_ON(uchar num)//流水灯开
-{
-	Enable38(4);
-	if(num<=7)
-	P0&=~(0x01<<num);
-	else
-	P0=0X00;
-}
-
-void LED8_OFF(uchar num)//流水灯关
-{
-	Enable38(4);
-	if(num<=7)
-	P0|=0x01<<num;
-	else
-	P0=0Xff;
 }
 
 void Key_scan()//按键扫描
@@ -158,14 +150,15 @@ void main()//主函数
 	Display_init();//数码管显示初始化
 	Timer0_Init();//定时器0初始化
 	Init_DS1302();//DS1302初始化
-	LED8_OFF(8);//关闭8个led
+	led8=0;//关闭8个led
+	led8_change(led8);
 	AT24C02_write(0x03,60);//AT24C02写入数据
-//	adc_set(0);//DA输出
+	adc_set(10);//DA输出
 	Display_AT24C02(AT24C02_read(0x03));//AT24C02读取数据显示
 	Display_AT24C02(AT24C02_read(0x03));//重复一次，保证读取成功率
 	while(1)
 	{
-		
+		Key_scan();//按键扫描
 		if(count>=20)
 		{
 			count=0;
@@ -183,7 +176,7 @@ void main()//主函数
 							Display_wendu();//更新温度显示
 							break;
 					case 7:	flag_led=!flag_led;
-							if(flag_led)LED8_ON(1);else LED8_OFF(1);//按键控制led
+							if(flag_led)led8|=0x01;else led8&=~0x01;//按键控制led
 							break;
 				}
 				
@@ -198,6 +191,5 @@ void Timer0() interrupt 1//定时器0中断
 	TH0=-9;
 	count++;
 	Display();//数码管显示函数
-	Key_scan();//按键扫描
 }
 

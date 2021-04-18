@@ -136,7 +136,6 @@ void adc_set(unsigned char dat) //DAC输出
 	IIC_WaitAck();
 	IIC_SendByte(0x40);// DAC输出模式
 	IIC_WaitAck();
-	
 	IIC_SendByte(dat);  ;//DAC写入数据
 	IIC_WaitAck();
 	IIC_Stop();
